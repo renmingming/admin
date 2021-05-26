@@ -56,9 +56,10 @@ export default {
     submitForm() {
       this.$refs.login.validate((valid) => {
         if (valid) {
-          this.$message.success("登录成功");
-          localStorage.setItem("ms_username", this.param.username);
-          this.$router.push("/");
+          this.$store.dispatch("LoginByUsername", this.param).then(() => {
+            this.$message.success("登录成功");
+            this.$router.push("/");
+          })
         } else {
           this.$message.error("请输入张号和密码");
         }

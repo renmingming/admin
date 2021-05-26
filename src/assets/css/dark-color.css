@@ -1,6 +1,9 @@
 .header{
     background-color: #242f42;
 }
+.scrollbar-wrapper {
+    background: rgb(50, 65, 87);
+  }
 .login-wrap{
     background: #324157;
 }

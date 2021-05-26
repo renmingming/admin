@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import store from "../store";
 import Home from "../views/Home.vue";
 
 export const constantRoutes = [
@@ -43,7 +42,7 @@ export const asyncRouters = [
     name: "Operator",
     meta: {
       title: "管理列表",
-      role: ["admin"],
+      role: ["operator"],
     },
     component: () =>
       import(/* webpackChunkName: "groups" */ "../views/404.vue"),
@@ -54,17 +53,4 @@ const router = createRouter({
   routes: constantRoutes,
 });
 
-router.beforeEach((to, from, next) => {
-  const role = localStorage.getItem("ms_username");
-  if (store.getters.token) {
-    if (to.path === "/login") {
-      next({ path: "/" });
-    } else {
-      if (store.getters.roles.length === 0) {
-        // 拉取用户权限
-        store.dispatch("GetInfo").then((res) => {});
-      }
-    }
-  }
-});
 export default router;

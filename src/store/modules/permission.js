@@ -1,4 +1,4 @@
-import { constantRoutes, asyncRouters } from "src/router";
+import { constantRoutes, asyncRouters } from "@/router";
 
 function hasPermission(roles, route) {
   if (route.meta && route.meta.role) {
@@ -8,12 +8,12 @@ function hasPermission(roles, route) {
   }
 }
 
-function asyncRoutersHandler(routers) {
-  routers.filter((v) => {
+function asyncRoutersHandler(roles, routers) {
+  return routers.filter((v) => {
     if (roles.indexOf("admin") > 0) return true;
     if (hasPermission(roles, v)) {
       if (v.children && v.children.length > 0) {
-        return asyncRoutersHandler(v.children);
+        return asyncRoutersHandler(roles, v.children);
       }
       return v;
     } else {
@@ -26,19 +26,21 @@ const permission = {
   state: {
     routers: constantRoutes,
     addRouters: [],
+    leftList: [],
   },
+  getters: {},
   mutations: {
     SET_ROUTERS: (state, routers) => {
       state.addRouters = routers;
-      state.routers = constantRoutes.concat(routers);
+      state.leftList = constantRoutes.concat(routers);
     },
   },
   actions: {
     GenerateRoutes({ commit }, data) {
       return new Promise((resolve) => {
         const { roles } = data;
-        const accessedRouters = asyncRoutersHandler(asyncRouters);
-        commit("SET_ROUTES", accessedRouters);
+        const accessedRouters = asyncRoutersHandler(roles, asyncRouters);
+        commit("SET_ROUTERS", accessedRouters);
         resolve(accessedRouters);
       });
     },
