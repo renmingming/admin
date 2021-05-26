@@ -1,22 +1,23 @@
-
+import { loginByUsername } from '@/api/user';
 const user = {
     state: {
-        token: ''
+        user: null
     },
     mutations: {
-        SET_TOKEN: (state, token) => {
-            state.token = token;
+        SET_USER_INFO: (state, userInfo) => {
+            state.user = userInfo;
         }
     },
     actions: {
         LoginByUsername({commit}, userInfo) {
             const username = userInfo.username.trim();
             return new Promise((resolve, reject) => {
-                const token = '123';
-                commit('SET_TOKEN', token);
-                resolve();
+                loginByUsername(username, userInfo.password).then(res => {
+                  commit('SET_USER_INFO', res);
+                  resolve();
+                })
             }).catch(error => {
-                reject();
+                reject(error);
             })
         }
     }
