@@ -6,6 +6,7 @@ import "./permission";
 
 import ElementPlus from "element-plus";
 import "element-plus/lib/theme-chalk/index.css";
+import "@/styles/index.scss";
 
 createApp(App)
   .use(store)

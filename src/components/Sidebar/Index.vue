@@ -4,15 +4,16 @@
       <el-menu
         class="sidebar-el-menu"
         default-active=""
-        :collapse="isCollapse"
+        :collapse="false"
         background-color="#324157"
         text-color="#bfcbd9"
+        :unique-opened="false"
         active-text-color="#20a0ff"
-        router
       >
         <sidebar-item
           v-for="route in leftList"
-          :key="route.name"
+          :key="route.path"
+          :base-path="route.path"
           :item="route"
         ></sidebar-item>
       </el-menu>
@@ -66,7 +67,9 @@ export default {
       ],
     };
   },
-  ...mapGetters(["leftList"]),
+  computed: {
+    ...mapGetters(["leftList"]),
+  },
   components: {
     SidebarItem,
   },
@@ -80,19 +83,13 @@ export default {
 <style scoped>
 .sidebar {
   display: block;
-  position: absolute;
-  left: 0;
-  top: 70px;
-  bottom: 0;
-  overflow-y: scroll;
+  width: 250px;
 }
-.sidebar::-webkit-scrollbar {
-  width: 0;
-}
+
 .sidebar-el-menu:not(.el-menu--collapse) {
   width: 250px;
 }
-.sidebar > ul {
-  height: 100%;
+.sidebar ul {
+  width: 100%;
 }
 </style>

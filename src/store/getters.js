@@ -1,5 +1,7 @@
 const getters = {
   token: (state) => state.user.token,
-  leftList: (state) => state.permission.leftList,
+  //   sidebar: (state) => state.app.sidebar,
+  avatar: (state) => state.user.avatar,
+  name: (state) => state.user.name,
 };
 export default getters;

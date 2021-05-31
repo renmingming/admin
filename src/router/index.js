@@ -1,28 +1,33 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
+import Layout from "../layout/index";
 
 export const constantRoutes = [
   {
-    path: "/",
-    name: "Home",
-    component: Home,
-  },
-  {
     path: "/login",
     name: "Login",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Login.vue"),
+    component: () => import("@/views/login"),
+    hidden: true,
   },
   {
     path: "/404",
     name: "404",
-    meta: {
-      title: "找不到页面了",
-    },
-    component: () => import(/* webpackChunkName: "404" */ "../views/404.vue"),
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import("../views/404.vue"),
+  },
+  {
+    path: "/",
+    component: Layout,
+    redirect: "/home",
+    children: [
+      {
+        path: "home",
+        name: "Home",
+        component: () => import("@/views/home"),
+        meta: { title: "Dashboard", icon: "dashboard" },
+      },
+    ],
   },
 ];
 

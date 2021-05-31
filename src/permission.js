@@ -1,37 +1,47 @@
 import router from "@/router";
+import { Message } from "element-plus";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 import store from "@/store";
 import { getToken } from "@/utils/auth";
+import getPageTitle from "@/utils/get-page-title";
 
+NProgress.configure({ showSpinner: false });
 const whiteList = ["/login"];
 
-router.beforeEach((to, from, next) => {
-  if (getToken()) {
+router.beforeEach(async (to, from, next) => {
+  NProgress.start();
+  document.title = getPageTitle(to.meta.title);
+  const hasToken = getToken();
+  if (hasToken) {
     if (to.path === "/login") {
       next({ path: "/" });
+      NProgress.done();
     } else {
-      if (!store.getters.roles || store.getters.roles.length === 0) {
-        // 拉取用户权限
-        store.dispatch("GetUserInfo").then((res) => {
-          console.log(res);
-          const roles = res.roles;
-          store.dispatch("GenerateRoutes", { roles }).then((accessRoutes) => {
-            console.log(accessRoutes);
-            accessRoutes.forEach((route) => {
-              router.addRoute(route);
-            });
-            console.log(to);
-            next();
-          });
-        });
-      } else {
+      const hasGetUserInfo = store.getters.name;
+      if (hasGetUserInfo) {
         next();
+      } else {
+        try {
+          await store.dispatch("user/getInfo");
+          next();
+        } catch (error) {
+          await store.dispatch("user/resetToken");
+          Message.error(error || "Has error");
+          next(`/login?redirect=${to.path}`);
+          NProgress.done();
+        }
       }
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {
       next();
     } else {
-      next("/login");
+      next(`/login?redirect=${to.path}`);
+      NProgress.done();
     }
   }
+});
+router.afterEach(() => {
+  NProgress.done();
 });
